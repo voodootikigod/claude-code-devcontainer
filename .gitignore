@@ -1,2 +1,5 @@
 # OAuth credentials extracted from host keychain
 .claude-credentials
+
+# Git worktrees used by team-develop
+.worktrees/

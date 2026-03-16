@@ -55,6 +55,6 @@
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postStartCommand": "cp /tmp/.claude-credentials /home/node/.claude/.credentials.json 2>/dev/null; chmod 600 /home/node/.claude/.credentials.json 2>/dev/null; cp /usr/local/share/claude-settings-default.json /home/node/.claude/settings.json 2>/dev/null; cp /usr/local/share/claude-state-default.json /home/node/.claude/.claude.json 2>/dev/null; mkdir -p /home/node/.claude/commands && cp /usr/local/share/claude-commands-default/*.md /home/node/.claude/commands/ 2>/dev/null; sudo /usr/local/bin/init-firewall.sh",
+  "postStartCommand": "cp /tmp/.claude-credentials /home/node/.claude/.credentials.json 2>/dev/null; chmod 600 /home/node/.claude/.credentials.json 2>/dev/null; cp /usr/local/share/claude-settings-default.json /home/node/.claude/settings.json 2>/dev/null; cp /usr/local/share/claude-state-default.json /home/node/.claude/.claude.json 2>/dev/null; mkdir -p /home/node/.claude/commands && cp /usr/local/share/claude-commands-default/*.md /home/node/.claude/commands/ 2>/dev/null; mkdir -p /workspace/.worktrees; sudo /usr/local/bin/init-firewall.sh",
   "waitFor": "postStartCommand"
 }

@@ -74,11 +74,11 @@ RUN ARCH=$(dpkg --print-architecture) && \
   rm -rf /tmp/beads.tar.gz /tmp/bd /tmp/CHANGELOG.md /tmp/LICENSE /tmp/README.md && \
   bd --version
 
+# Enable corepack and install pnpm (must run as root to symlink into /usr/local/bin)
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Set up non-root user
 USER node
-
-# Enable corepack and install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Install global packages
 ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
