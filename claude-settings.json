@@ -1,5 +1,6 @@
 {
   "theme": "dark",
+  "includeCoAuthoredBy": false,
   "permissions": {
     "allow": [
       "Bash(npm *)",

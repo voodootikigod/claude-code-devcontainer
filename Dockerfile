@@ -107,9 +107,10 @@ RUN curl -fsSL https://claude.ai/install.sh | bash \
   && echo 'alias cc="claude"' >> ~/.zshrc \
   && echo 'alias ccd="claude --dangerously-skip-permissions"' >> ~/.zshrc
 
-# Copy default Claude Code settings to a stable location (the .claude dir gets masked by volume mount)
+# Copy default Claude Code settings and commands to a stable location (the .claude dir gets masked by volume mount)
 COPY claude-settings.json /usr/local/share/claude-settings-default.json
 COPY claude-state.json /usr/local/share/claude-state-default.json
+COPY commands/ /usr/local/share/claude-commands-default/
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
