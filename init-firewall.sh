@@ -78,7 +78,7 @@ done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 # Resolve and add other allowed domains
 # Use /24 subnets for CDN-backed services to handle IP rotation
 CDN_DOMAINS=(registry.npmjs.org claude.ai sentry.io statsig.com)
-STATIC_DOMAINS=(api.anthropic.com storage.googleapis.com statsig.anthropic.com marketplace.visualstudio.com vscode.blob.core.windows.net update.code.visualstudio.com)
+STATIC_DOMAINS=(fonts.gstatic.com fonts.googleapis.com api.anthropic.com storage.googleapis.com statsig.anthropic.com marketplace.visualstudio.com vscode.blob.core.windows.net update.code.visualstudio.com
 
 for domain in "${CDN_DOMAINS[@]}"; do
     echo "Resolving $domain (CDN - using /24 subnets)..."

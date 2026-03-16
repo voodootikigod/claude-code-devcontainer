@@ -77,6 +77,9 @@ RUN ARCH=$(dpkg --print-architecture) && \
 # Set up non-root user
 USER node
 
+# Enable corepack and install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # Install global packages
 ENV NPM_CONFIG_PREFIX=/usr/local/share/npm-global
 ENV PATH=/home/node/.local/bin:$PATH:/usr/local/share/npm-global/bin
