@@ -65,9 +65,9 @@ Before executing, present to the user:
 
 | Team | Worktree | Issues | Description |
 |------|----------|--------|-------------|
-| Team 1 | /workspace/.worktrees/team-1 | t0z.X.Y, t0z.X.Z | Brief scope |
-| Team 2 | /workspace/.worktrees/team-2 | t0z.A.B, t0z.A.C | Brief scope |
-| Team 3 | /workspace/.worktrees/team-3 | t0z.D.E, t0z.D.F | Brief scope |
+| Team 1 | /tmp/worktrees/team-1 | t0z.X.Y, t0z.X.Z | Brief scope |
+| Team 2 | /tmp/worktrees/team-2 | t0z.A.B, t0z.A.C | Brief scope |
+| Team 3 | /tmp/worktrees/team-3 | t0z.D.E, t0z.D.F | Brief scope |
 
 ### Merge Order
 1. Team N (foundation) → main

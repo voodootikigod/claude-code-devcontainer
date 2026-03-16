@@ -36,7 +36,7 @@ Before any real work begins, run a dry-run sequence that exercises every tool an
    | File write | Write a temp file `.preflight-test` with "ok", then delete it via `rm .preflight-test` | Verify Write + cleanup |
    | File edit | (covered by write test) | Verify Edit tool |
    | Glob/Grep | `Glob("**/*.md")` | Verify search tools |
-   | Worktree creation | `git worktree add /workspace/.worktrees/preflight --detach HEAD` then `git worktree remove /workspace/.worktrees/preflight` | Verify worktree permissions |
+   | Worktree creation | `git worktree add /tmp/worktrees/preflight --detach HEAD` then `git worktree remove /tmp/worktrees/preflight` | Verify worktree permissions |
    | Branch operations | `git branch preflight-test && git branch -d preflight-test` | Verify branch create/delete |
    | Build commands | `pnpm typecheck --help` or equivalent no-op | Verify build tool access |
    | Agent/Team spawn | Spawn a minimal agent: `Agent(prompt="echo preflight ok", description="preflight test")` | Verify agent spawning |
@@ -97,11 +97,20 @@ By front-loading all prompts, the user approves once and the entire workflow run
 5. Create worktrees:
 ```bash
 git branch team-1/issue-id main
-git worktree add /workspace/.worktrees/team-1 team-1/issue-id
+git worktree add /tmp/worktrees/team-1 team-1/issue-id
 # repeat for each team
 ```
 
 6. Mark issues in_progress: `bd update <id> --status=in_progress`
+
+### Beads/Dolt Isolation Rules
+
+Worktrees are created in `/tmp/worktrees/` (outside the workspace) to prevent Dolt database corruption. Additional rules:
+
+- **NEVER run `bd` commands from a worktree** — only the lead runs beads from the main working tree (`/workspace`)
+- **Team agents must NOT interact with beads directly** — no `bd close`, `bd update`, `bd show` from worktrees
+- **Only the lead** manages issue status (open/close/update) from the main tree
+- **If `bd` errors occur**, restart the Dolt server: `bd sql-server stop && bd sql-server start`
 
 ---
 
@@ -114,21 +123,22 @@ The current session becomes the **lead** in delegate mode (Shift+Tab) — coordi
 ```
 Create an agent team. Use delegate mode. Require plan approval for implementers.
 
-Team 1 (foundation — worktree /workspace/.worktrees/team-1):
+Team 1 (foundation — worktree /tmp/worktrees/team-1):
   - "team1-impl": Implementer for issue {id} — {title}.
     Working directory: {absolute_worktree_path}. Branch: team-1/{issue_id}.
     {description}. {notes}. {plan_section}.
-    Work ONLY in the worktree. Run pnpm typecheck && pnpm build before done.
+    Work ONLY in the worktree. Do NOT run any `bd` or beads commands.
+    Run pnpm typecheck && pnpm build before done.
     Commit changes. Do NOT push or merge.
   - "team1-review": {domain} specialist reviewer for team1-impl.
     Working directory: {absolute_worktree_path}.
     Review with git diff main. Check correctness, API alignment, bundle safety, patterns.
     Message team1-impl directly with corrections. Iterate until satisfied.
 
-Team 2 (feature — worktree /workspace/.worktrees/team-2):
+Team 2 (feature — worktree /tmp/worktrees/team-2):
   [same pattern]
 
-Team 3 (feature — worktree /workspace/.worktrees/team-3):
+Team 3 (feature — worktree /tmp/worktrees/team-3):
   [same pattern]
 ```
 
@@ -141,7 +151,7 @@ Team 3 (feature — worktree /workspace/.worktrees/team-3):
 
 **Wave 2** — After Team 1 merges into main:
 - Lead merges Team 1's branch (see Merge Protocol below)
-- Lead rebases remaining worktrees: `cd /workspace/.worktrees/team-N && git rebase main`
+- Lead rebases remaining worktrees: `cd /tmp/worktrees/team-N && git rebase main`
 - Lead approves team2-impl and team3-impl plans → they begin implementation
 - team2-review, team3-review activate
 
@@ -217,7 +227,7 @@ If broken: `git reset --hard HEAD~N` and debug.
 
 ### 4. Rebase remaining branches
 ```bash
-cd /workspace/.worktrees/team-N && git rebase main
+cd /tmp/worktrees/team-N && git rebase main
 # for each remaining team
 ```
 
@@ -245,7 +255,7 @@ bd close <issue-id>
 
 1. Shut down all teammates (Agent Teams) or wait for Tasks to complete (subagents)
 2. Clean up team: tell lead "Clean up the team"
-3. Remove worktrees: `git worktree remove /workspace/.worktrees/team-N`
+3. Remove worktrees: `git worktree remove /tmp/worktrees/team-N`
 4. Delete branches: `git branch -d team-1/issue-id team-2/issue-id team-3/issue-id`
 5. Sync: `bd sync`
 6. Push: `git push`

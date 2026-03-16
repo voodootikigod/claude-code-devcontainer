@@ -1,5 +1,4 @@
 # OAuth credentials extracted from host keychain
 .claude-credentials
 
-# Git worktrees used by team-develop
-.worktrees/
+# Git worktrees are now created in /tmp/worktrees/ to avoid beads/dolt corruption
