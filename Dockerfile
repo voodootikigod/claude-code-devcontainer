@@ -101,16 +101,18 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 # Install Claude Code (native installer, replaces deprecated npm package)
 RUN curl -fsSL https://claude.ai/install.sh | bash \
   && echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc \
-  && echo 'alias cc="claude"' >> ~/.zshrc
+  && echo 'alias cc="claude"' >> ~/.zshrc \
+  && echo 'alias ccd="claude --dangerously-skip-permissions"' >> ~/.zshrc
 
-# Copy default Claude Code settings (sandbox permissions)
-COPY claude-settings.json /home/node/.claude/settings.json
+# Copy default Claude Code settings to a stable location (the .claude dir gets masked by volume mount)
+COPY claude-settings.json /usr/local/share/claude-settings-default.json
+COPY claude-state.json /usr/local/share/claude-state-default.json
 
 # Copy and set up firewall script
 COPY init-firewall.sh /usr/local/bin/
 USER root
 RUN chmod +x /usr/local/bin/init-firewall.sh && \
-  chown node:node /home/node/.claude/settings.json && \
+  chmod 644 /usr/local/share/claude-settings-default.json && \
   echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
   chmod 0440 /etc/sudoers.d/node-firewall
 USER node

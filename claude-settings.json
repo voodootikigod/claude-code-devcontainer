@@ -1,4 +1,5 @@
 {
+  "theme": "dark",
   "permissions": {
     "allow": [
       "Bash(npm *)",
